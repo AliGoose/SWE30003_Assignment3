@@ -20,13 +20,13 @@ namespace Assignment3.Application.States
         {
             if (!_session.IsUserInRole(Roles.Staff))
             {
-                ConsoleHelper.PrintError("Invalid access to customer page");
-                ConsoleHelper.PrintInfo("Signing out");
+                ConsoleInputHandler.PrintError("Invalid access to customer page");
+                ConsoleInputHandler.PrintInfo("Signing out");
                 _session.SignOut();
                 OnStateChanged(this, nameof(MainMenuState));
             }
 
-            var input = ConsoleHelper.AskUserOption(
+            var input = ConsoleInputHandler.AskUserOption(
             new Dictionary<char, string>()
             {
                 { 'V', "View Data Sales"},

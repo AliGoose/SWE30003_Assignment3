@@ -5,7 +5,7 @@ namespace Assignment3.Application.Services;
 
 // TODO(HUY): separate into IConsoleView and IConsoleInputHandler
 [Obsolete]
-internal static class ConsoleHelper
+internal static class ConsoleInputHandler
 {
     /// <summary>
     /// Ask the user to select an option from the provided list.
@@ -56,7 +56,7 @@ internal static class ConsoleHelper
     /// <returns>The pressed key.</returns>
     /// <remarks>
     /// This method is used to ask user to enter a single key and is intended to deal with special keys such as Escape or Enter.
-    /// To ask user to choose from a list of choices, see <see cref="ConsoleHelper.AskUserOption(IReadOnlyDictionary{char, string}, string)"/>.
+    /// To ask user to choose from a list of choices, see <see cref="ConsoleInputHandler.AskUserOption(IReadOnlyDictionary{char, string}, string)"/>.
     /// </remarks>
     [Obsolete("See IConsoleInputHandler.AskUserKeyInput")]
     public static ConsoleKey AskUserKeyInput(string prompt = "Please enter your key:")
@@ -93,14 +93,14 @@ internal static class ConsoleHelper
         {
             if (!validateFunc(inputStr))
             {
-                ConsoleHelper.PrintError(validationErrorMessage);
+                ConsoleInputHandler.PrintError(validationErrorMessage);
                 result = default;
                 return false;
             }
         }
         catch
         {
-            ConsoleHelper.PrintError(validationErrorMessage);
+            ConsoleInputHandler.PrintError(validationErrorMessage);
             result = default;
             return false;
         }
@@ -112,7 +112,7 @@ internal static class ConsoleHelper
         }
         catch
         {
-            ConsoleHelper.PrintError(conversionErrorMessage);
+            ConsoleInputHandler.PrintError(conversionErrorMessage);
             result = default;
             return false;
         }
@@ -145,10 +145,10 @@ internal static class ConsoleHelper
     [Obsolete("See IConsoleView.Errors")]
     public static void PrintErrors(IEnumerable<string> errors)
     {
-        ConsoleHelper.PrintError("Error(s):");
+        ConsoleInputHandler.PrintError("Error(s):");
         foreach (var error in errors)
         {
-            ConsoleHelper.PrintError(error);
+            ConsoleInputHandler.PrintError(error);
         }
     }
 }

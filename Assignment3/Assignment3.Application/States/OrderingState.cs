@@ -327,17 +327,17 @@ internal class OrderingState : AppState
         var success = invoice.MakePayment();
         if (success)
         {
-            ConsoleHelper.PrintInfo("Order successfully placed");
+            ConsoleInputHandler.PrintInfo("Order successfully placed");
             order.StartDelivery();
             return;
         }
         
-        ConsoleHelper.PrintError("An error occurred whilst processing your order");
+        ConsoleInputHandler.PrintError("An error occurred whilst processing your order");
     }
 
     private IDeliveryMethod AskUserForDeliveryMethod(int orderId)
     {
-        var choice = ConsoleHelper.AskUserOption(new Dictionary<char, string>()
+        var choice = ConsoleInputHandler.AskUserOption(new Dictionary<char, string>()
             {
                 { 'P', "Pick up at store" },
                 { 'D', "Postal delivery" },
@@ -354,10 +354,10 @@ internal class OrderingState : AppState
     private IDeliveryMethod ProcessPostalDelivery(int orderId)
     { 
         // TODO(HUY): VALIDATE INPUT
-        var streetNumber = ConsoleHelper.AskUserTextInput("Enter your address number");
-        var streetName =  ConsoleHelper.AskUserTextInput("Enter your address street name");
-        var postalCode = ConsoleHelper.AskUserTextInput("Enter your postcode");
-        var apartmentNumber = ConsoleHelper.AskUserTextInput("Enter your apartment number (if applicable)");
+        var streetNumber = ConsoleInputHandler.AskUserTextInput("Enter your address number");
+        var streetName =  ConsoleInputHandler.AskUserTextInput("Enter your address street name");
+        var postalCode = ConsoleInputHandler.AskUserTextInput("Enter your postcode");
+        var apartmentNumber = ConsoleInputHandler.AskUserTextInput("Enter your apartment number (if applicable)");
 
         return new PostalDelivery(
             orderId, 
@@ -374,7 +374,7 @@ internal class OrderingState : AppState
 
     private ITransactionMethod AskUserForPaymentMethod(int orderId)
     {                                                
-        var choice = ConsoleHelper.AskUserOption(new Dictionary<char, string>()          
+        var choice = ConsoleInputHandler.AskUserOption(new Dictionary<char, string>()          
             {                                                                            
                 { 'P', "Paypal" },                                             
                 { 'A', "Cash" },                   
@@ -395,17 +395,17 @@ internal class OrderingState : AppState
     private ITransactionMethod ProcessBankTransfer(int orderId)
     {
         // TODO(HUY): VALIDATE INPUT
-        var bsb = ConsoleHelper.AskUserTextInput("Enter your BSB");     
-        var accountNo =  ConsoleHelper.AskUserTextInput("Enter your account number");
+        var bsb = ConsoleInputHandler.AskUserTextInput("Enter your BSB");     
+        var accountNo =  ConsoleInputHandler.AskUserTextInput("Enter your account number");
         return new BankTransaction(bsb, accountNo);
     }
 
     private ITransactionMethod ProcessCardTransaction(int orderId)
     {
         // TODO(HUY): VALIDATE INPUT
-        var cardNo = ConsoleHelper.AskUserTextInput("Enter your card number");
-        var cvc = ConsoleHelper.AskUserTextInput("Enter your card CVC");
-        var expiryDate = ConsoleHelper.AskUserTextInput("Enter your card expiry date");
+        var cardNo = ConsoleInputHandler.AskUserTextInput("Enter your card number");
+        var cvc = ConsoleInputHandler.AskUserTextInput("Enter your card CVC");
+        var expiryDate = ConsoleInputHandler.AskUserTextInput("Enter your card expiry date");
         return new CreditCardTransaction(cardNo, cvc, DateOnly.FromDateTime(DateTime.Parse(expiryDate))); 
     }
 

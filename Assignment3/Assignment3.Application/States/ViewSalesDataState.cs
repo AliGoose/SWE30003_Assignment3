@@ -36,7 +36,7 @@ namespace Assignment3.Application.States
                 { 'P', "Print Sales Data" }
             };
 
-            var input = ConsoleHelper.AskUserOption(options);
+            var input = ConsoleInputHandler.AskUserOption(options);
 
             switch (input)
             {

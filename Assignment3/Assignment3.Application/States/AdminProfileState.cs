@@ -20,13 +20,13 @@ internal class AdminProfileState : AppState
     {
         if (!_session.IsUserInRole(Roles.Admin))
         {
-            ConsoleHelper.PrintError("Invalid access to admin page");
-            ConsoleHelper.PrintInfo("Signing out");
+            ConsoleInputHandler.PrintError("Invalid access to admin page");
+            ConsoleInputHandler.PrintInfo("Signing out");
             _session.SignOut();
             OnStateChanged(this, nameof(MainMenuState));
         }
 
-        var input = ConsoleHelper.AskUserOption(
+        var input = ConsoleInputHandler.AskUserOption(
             new Dictionary<char, string>()
             {
                 { 'V', "View all staff accounts" },
@@ -57,9 +57,9 @@ internal class AdminProfileState : AppState
 
     private void CreateStaffAccount()
     {
-        var email = ConsoleHelper.AskUserTextInput("Enter the staff member's email");
-        var phone = ConsoleHelper.AskUserTextInput("Enter the staff member's phone number");
-        var password = ConsoleHelper.AskUserTextInput("Enter the account password");
+        var email = ConsoleInputHandler.AskUserTextInput("Enter the staff member's email");
+        var phone = ConsoleInputHandler.AskUserTextInput("Enter the staff member's phone number");
+        var password = ConsoleInputHandler.AskUserTextInput("Enter the account password");
 
         var newStaffAccount = new StaffAccount()
         {
@@ -72,7 +72,7 @@ internal class AdminProfileState : AppState
         var validationResults = ModelValidator.ValidateObject(newStaffAccount);
         if (validationResults.Count != 0)
         {
-            ConsoleHelper.PrintErrors(validationResults);
+            ConsoleInputHandler.PrintErrors(validationResults);
             return;
         }
 
@@ -84,31 +84,31 @@ internal class AdminProfileState : AppState
         }
         catch (Exception e) // TODO: catch more specific exception
         {
-            ConsoleHelper.PrintError("Failed to register new staff account. Perhaps an account with this email already exists?");
+            ConsoleInputHandler.PrintError("Failed to register new staff account. Perhaps an account with this email already exists?");
 #if DEBUG
             Console.WriteLine(e.Message);
 #endif
             return;
         }
 
-        ConsoleHelper.PrintInfo("Successfully created staff account");
+        ConsoleInputHandler.PrintInfo("Successfully created staff account");
     }
 
     private void ChangeStaffAccountDetails()
     {
-        var email = ConsoleHelper.AskUserTextInput("Enter the staff member's email");
-        var newPhoneNumber = ConsoleHelper.AskUserTextInput("Enter the staff member's new phone number. Press [Enter] if you do not want to change their phone number");
-        var newPassword = ConsoleHelper.AskUserTextInput("Enter the staff member's new password. Press [Enter] if you do not want to change their password");
+        var email = ConsoleInputHandler.AskUserTextInput("Enter the staff member's email");
+        var newPhoneNumber = ConsoleInputHandler.AskUserTextInput("Enter the staff member's new phone number. Press [Enter] if you do not want to change their phone number");
+        var newPassword = ConsoleInputHandler.AskUserTextInput("Enter the staff member's new password. Press [Enter] if you do not want to change their password");
 
         if (string.IsNullOrEmpty(email)) 
         {
-            ConsoleHelper.PrintError("Email cannot be empty");
+            ConsoleInputHandler.PrintError("Email cannot be empty");
             return;
         }
 
         if (string.IsNullOrEmpty(newPhoneNumber) && string.IsNullOrEmpty(newPassword))
         {
-            ConsoleHelper.PrintInfo("No details changed");
+            ConsoleInputHandler.PrintInfo("No details changed");
             return;
         }
 
@@ -116,7 +116,7 @@ internal class AdminProfileState : AppState
         var staffAccount = context.UserAccounts.FirstOrDefault(x => x.Email == email && x.Role == Roles.Staff);
         if (staffAccount == null)
         {
-            ConsoleHelper.PrintError($"Unable to find staff account with email '{email}'");
+            ConsoleInputHandler.PrintError($"Unable to find staff account with email '{email}'");
             return;
         }
 
@@ -133,7 +133,7 @@ internal class AdminProfileState : AppState
         var validationResults = ModelValidator.ValidateObject(staffAccount);
         if (validationResults.Count != 0)
         {
-            ConsoleHelper.PrintErrors(validationResults);
+            ConsoleInputHandler.PrintErrors(validationResults);
             return;
         }
 
@@ -144,14 +144,14 @@ internal class AdminProfileState : AppState
         }
         catch (Exception e) // TODO: catch more specific exception
         {
-            ConsoleHelper.PrintError("Failed to change customer details.");
+            ConsoleInputHandler.PrintError("Failed to change customer details.");
 #if DEBUG
             Console.WriteLine(e.Message);
 #endif
             return;
         }
 
-        ConsoleHelper.PrintInfo("Successfully changed staff member details");
+        ConsoleInputHandler.PrintInfo("Successfully changed staff member details");
     }
 
     private void ViewStaffAccounts()
@@ -163,10 +163,10 @@ internal class AdminProfileState : AppState
             .Select(x => new { x.Email, x.RegistryDate, x.Phone })
             .ToList();
 
-        ConsoleHelper.PrintInfo($"Displaying {staffAccounts.Count} staff member(s)");
+        ConsoleInputHandler.PrintInfo($"Displaying {staffAccounts.Count} staff member(s)");
         foreach (var staff in staffAccounts)
         {
-            ConsoleHelper.PrintInfo($"Email: {staff.Email} - Phone: {staff.Phone} - Registration Date: {staff.RegistryDate.ToLocalTime()}");
+            ConsoleInputHandler.PrintInfo($"Email: {staff.Email} - Phone: {staff.Phone} - Registration Date: {staff.RegistryDate.ToLocalTime()}");
         }
     }
 

@@ -19,8 +19,8 @@ internal class CustomerProfileState : AppState
     {
         if (!_session.IsUserInRole(Roles.Customer))
         {
-            ConsoleHelper.PrintError("Invalid access to customer page");
-            ConsoleHelper.PrintInfo("Signing out");
+            ConsoleInputHandler.PrintError("Invalid access to customer page");
+            ConsoleInputHandler.PrintInfo("Signing out");
             _session.SignOut();
             OnStateChanged(this, nameof(MainMenuState));
         }
@@ -33,11 +33,11 @@ internal class CustomerProfileState : AppState
             { 'R', "Request refund" },
         };
 
-        ConsoleHelper.PrintInfo("Customer Profile");
-        ConsoleHelper.PrintInfo($"Email: {_session.AuthenticatedUser.Email}");
-        ConsoleHelper.PrintInfo($"Phone: {_session.AuthenticatedUser.Phone}");
-        ConsoleHelper.PrintInfo($"Registration Date: {_session.AuthenticatedUser.RegistryDate.ToLocalTime()}");
-        var input = ConsoleHelper.AskUserOption(choices);
+        ConsoleInputHandler.PrintInfo("Customer Profile");
+        ConsoleInputHandler.PrintInfo($"Email: {_session.AuthenticatedUser.Email}");
+        ConsoleInputHandler.PrintInfo($"Phone: {_session.AuthenticatedUser.Phone}");
+        ConsoleInputHandler.PrintInfo($"Registration Date: {_session.AuthenticatedUser.RegistryDate.ToLocalTime()}");
+        var input = ConsoleInputHandler.AskUserOption(choices);
 
         switch (input)
         {
@@ -58,13 +58,13 @@ internal class CustomerProfileState : AppState
 
     private void ChangeAccountDetails()
     {
-        var newPhoneNumber = ConsoleHelper.AskUserTextInput("Enter your new phone number or press enter if you do not want to change your phone number");
-        var newPassword = ConsoleHelper.AskUserTextInput("Enter your new password or press enter if you do not want to change your password");
+        var newPhoneNumber = ConsoleInputHandler.AskUserTextInput("Enter your new phone number or press enter if you do not want to change your phone number");
+        var newPassword = ConsoleInputHandler.AskUserTextInput("Enter your new password or press enter if you do not want to change your password");
 
         // TODO(HUY): VALIDATE INPUT
         if (string.IsNullOrEmpty(newPhoneNumber) && string.IsNullOrEmpty(newPassword))
         {
-            ConsoleHelper.PrintInfo("No details changed");
+            ConsoleInputHandler.PrintInfo("No details changed");
             return;
         }
 
@@ -72,8 +72,8 @@ internal class CustomerProfileState : AppState
         var userAccount = context.UserAccounts.Find(_session.AuthenticatedUser.Email);
         if (userAccount == null)
         {
-            ConsoleHelper.PrintError("Unable to find customer account");
-            ConsoleHelper.PrintInfo("Signing out");
+            ConsoleInputHandler.PrintError("Unable to find customer account");
+            ConsoleInputHandler.PrintInfo("Signing out");
             _session.SignOut();
             OnStateChanged(this, nameof(MainMenuState));
             return;
@@ -92,7 +92,7 @@ internal class CustomerProfileState : AppState
         var validationResults = ModelValidator.ValidateObject(userAccount);
         if (validationResults.Count != 0)
         {
-            ConsoleHelper.PrintErrors(validationResults);
+            ConsoleInputHandler.PrintErrors(validationResults);
             return;
         }
 
@@ -103,14 +103,14 @@ internal class CustomerProfileState : AppState
         }
         catch (Exception e) // TODO: catch more specific exception
         {
-            ConsoleHelper.PrintError("Failed to change customer details.");
+            ConsoleInputHandler.PrintError("Failed to change customer details.");
 #if DEBUG
             Console.WriteLine(e.Message);
 #endif
             return;
         }
 
-        ConsoleHelper.PrintInfo("Successfully changed customer details");
+        ConsoleInputHandler.PrintInfo("Successfully changed customer details");
     }
 
     private void RequestRefund()

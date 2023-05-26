@@ -17,7 +17,6 @@ public class CreditCardTransaction : ITransactionMethod
         var receipt = new Receipt
         {
             Order = order,
-            TransactionId = transaction.Id,
             Transaction = transaction
         };
 
