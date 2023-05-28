@@ -104,7 +104,7 @@ internal class OrderingState : AppState
         var order = new Order(_session.AuthenticatedUser.Email);
         _view.Info($"Type the list of product ID - quantity pairs of items you'd like to purchase. Type [{ConsoleKey.Backspace}] when you are finished.");
         _view.Info($"For example: type '1-2 [{ConsoleKey.Enter}] 43-1 [{ConsoleKey.Backspace}]' to add 2 products with ID 1 and 1 product with ID 43");
-
+        
         var consoleKey = ConsoleKey.Enter;
         while (consoleKey != ConsoleKey.Backspace)
         {
@@ -112,43 +112,34 @@ internal class OrderingState : AppState
                     InputFormatValidator.ValidateHyphenSeparatedNumberPair,
                     InputConvertor.ToHyphenSeparatedIntegerPair,
                     out var result,
-                    $"Enter the product ID and quantity. Press [{ConsoleKey.Enter}] to exit.",
+                    "Enter the product ID and quantity",
                     "Input must be a pair of hyphen-separated numbers"))
             {
-                if (result != (default, default))
+                var (productId, productQuantity) = result;
+                var isProductAlreadyAdded = false;
+                foreach (var product in order.Products)
                 {
-                    var (productId, productQuantity) = result;
-                    var isProductAlreadyAdded = false;
-                    foreach (var product in order.Products)
+                    if (product.ProductId == productId && product.ProductQuantity != productQuantity)
                     {
-                        if (product.ProductId == productId && product.ProductQuantity != productQuantity)
-                        {
-                            isProductAlreadyAdded = true;
-                            product.ProductQuantity = productQuantity;
-                            _view.Info($"Quantity of product ID [{product.ProductId}] changed to {product.ProductQuantity}");
-                        }
-                    }
-
-                    if (!isProductAlreadyAdded)
-                    {
-                        order.Products.Add(new OrderProduct
-                        {
-                            ProductId = productId,
-                            ProductQuantity = productQuantity,
-                        });
-                    }
-
-                    _view.Info($"Added {productQuantity} of product ID [{productId}]");
-                    consoleKey = _inputHandler.AskUserKeyInput($"Press any key to continue. Press [{ConsoleKey.Backspace}] to finish.");
+                        isProductAlreadyAdded = true;
+                        product.ProductQuantity = productQuantity;
+                        _view.Info($"Quantity of product ID [{product.ProductId}] changed to {product.ProductQuantity}");
+                    } 
                 }
-                else
+
+                if (!isProductAlreadyAdded)
                 {
-                    break;
+                    order.Products.Add(new OrderProduct
+                    {
+                        ProductId = productId,
+                        ProductQuantity = productQuantity,
+                    });
                 }
-                
+
+                _view.Info($"Added {productQuantity} of product ID [{productId}]");
             }
 
-            
+            consoleKey = _inputHandler.AskUserKeyInput($"Press any key to continue. Press [{ConsoleKey.Backspace}] to finish.");
         }
 
         if (order.Products.Count == 0)
@@ -274,7 +265,7 @@ internal class OrderingState : AppState
                 }
                 else
                 {
-                    break;
+                    consoleKey = ConsoleKey.Backspace;
                 }
             }
         }

@@ -29,7 +29,7 @@ public static class InputFormatValidator
     /// <returns><c>True</c> if the input is a hypen-separated pair of number, otherwise <c>False</c>.</returns>
     public static bool ValidateHyphenSeparatedNumberPair(string input)
     {
-        return string.IsNullOrEmpty(input) || Regex.IsMatch(input, RegexPatterns.HyphenSeparatedDigits) &&
+        return Regex.IsMatch(input, RegexPatterns.HyphenSeparatedDigits) &&
                input
                    .Split("-")
                    .Select(x => int.TryParse(x, out var r))
